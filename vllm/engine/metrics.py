@@ -190,6 +190,13 @@ class Metrics:
             multiprocess_mode="sum",
         )
 
+        # GPU FLOPS
+        self.gauge_gpu_flops = self._gauge_cls(
+            name="vllm:gpu_flops",
+            documentation="GPU FLOPS",
+            labelnames=labelnames + ["gpu_id"],
+            multiprocess_mode="sum")
+
 
 # end-metrics-definitions
 
@@ -475,6 +482,10 @@ class PrometheusStatLogger(StatLoggerBase):
         self._log_histogram(self.metrics.histogram_n_request, stats.n_requests)
         self._log_histogram(self.metrics.histogram_best_of_request,
                             stats.best_of_requests)
+
+        # GPU FLOPS
+        for gpu_id, flops in stats.gpu_flops.items():
+            self.metrics.gauge_gpu_flops.labels(**self.labels, gpu_id=gpu_id).set(flops)
 
     def _log_prometheus_interval(self, prompt_throughput: float,
                                  generation_throughput: float) -> None:

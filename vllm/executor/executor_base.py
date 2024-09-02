@@ -9,6 +9,7 @@ from vllm.lora.request import LoRARequest
 from vllm.model_executor.layers.sampler import SamplerOutput
 from vllm.prompt_adapter.request import PromptAdapterRequest
 from vllm.sequence import ExecuteModelRequest
+from vllm.utils import get_gpu_flops
 
 
 class ExecutorBase(ABC):
@@ -45,6 +46,7 @@ class ExecutorBase(ABC):
         self.prompt_adapter_config = prompt_adapter_config
         self.observability_config = observability_config
         self._init_executor()
+        self.gpu_flops = {}
 
     @abstractmethod
     def _init_executor(self) -> None:
@@ -129,6 +131,12 @@ class ExecutorBase(ABC):
 
     def __del__(self):
         self.shutdown()
+
+    def update_gpu_flops(self):
+        self.gpu_flops = get_gpu_flops()
+
+    def get_gpu_flops(self):
+        return self.gpu_flops
 
 
 class ExecutorAsyncBase(ExecutorBase):

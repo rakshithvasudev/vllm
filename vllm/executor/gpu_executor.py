@@ -128,6 +128,7 @@ class GPUExecutor(ExecutorBase):
         self, execute_model_req: ExecuteModelRequest
     ) -> Optional[List[Union[SamplerOutput, PoolerOutput]]]:
         output = self.driver_worker.execute_model(execute_model_req)
+        self.update_gpu_flops()
         return output
 
     def add_lora(self, lora_request: LoRARequest) -> bool:

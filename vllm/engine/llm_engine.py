@@ -52,7 +52,7 @@ from vllm.transformers_utils.tokenizer_group import (
     BaseTokenizerGroup, init_tokenizer_from_configs)
 from vllm.usage.usage_lib import (UsageContext, is_usage_stats_enabled,
                                   usage_message)
-from vllm.utils import Counter, Device
+from vllm.utils import Counter, Device, get_gpu_memory, get_gpu_flops
 from vllm.version import __version__ as VLLM_VERSION
 
 logger = init_logger(__name__)
